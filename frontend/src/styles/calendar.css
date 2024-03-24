@@ -1,0 +1,22 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.rbc-toolbar .rbc-btn-group button:nth-child(2),
+.rbc-toolbar .rbc-btn-group button:nth-child(3)
+{
+    display: none;
+}
+
+.datepicker-input-wrapper .react-datepicker-wrapper
+{
+    margin-left: auto;
+}
+
+.react-datepicker {
+    transform: translateX(-4.5rem);
+}
+
+.react-datepicker__input-container input {
+    @apply ml-auto text-right focus:outline-none;
+}
