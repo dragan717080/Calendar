@@ -21,6 +21,7 @@ class UserFactory extends Factory
         return [
             'email' => fake()->unique()->safeEmail(),
             'password' => static::$password ??= Hash::make('password'),
+            'auth_token' => Str::random(60),
         ];
     }
 }

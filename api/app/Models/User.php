@@ -12,11 +12,12 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, HasUuids;
 
-    protected $fillable = ['email', 'password'];
+    protected $fillable = ['email', 'password', 'authToken'];
 
     protected $hidden = ['password'];
 
     protected $casts = [
         'password' => 'hashed',
+        'authToken' => 'hashed',
     ];
 }

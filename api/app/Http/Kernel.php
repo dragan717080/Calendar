@@ -68,5 +68,6 @@ class Kernel extends HttpKernel
 
     protected $routeMiddleware = [
         'validateEmail' => \App\Http\Middleware\ValidateEmail::class,
+        'validateAuthToken' => \App\Http\Middleware\ValidateAuthToken::class,
     ];
 }

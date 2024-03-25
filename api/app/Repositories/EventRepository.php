@@ -62,13 +62,22 @@ class EventRepository implements CreateInterface, ReadInterface,
         return $event;
     }
 
+    /**
+     * Creates an event.
+     *
+     * @return Event|string Returns either:
+     *   - $event: Event if related user was found.
+     *   - $errorMessage: string|null In case the related user was not found, the related class 'ResponseBuilder' shall give an informative message with error code 404.
+     * 
+     *   The 'ResponseBuilder' class shall also handle other parameters, and middleware 'App\Http\Middleware\ValidateEmail' shall validate email.
+     */
     public function create(
         string $userEmail,
         string $title, 
         string $description,
         string $startTime,
         string $endTime
-    )
+    ): Event|string
     {
         $event = new Event();
 

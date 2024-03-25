@@ -119,9 +119,8 @@ class ResponseBuilder
                 : $e->getMessage();
 
             throw new HttpResponseException(
-
                 response()->json(
-                    'Error creating ' . strtolower($this->modelName) . ": " . $errorDetails,
+                    ['message' => 'Error creating ' . strtolower($this->modelName) . ": " . $errorDetails],
                     Response::HTTP_BAD_REQUEST
                 )
             );
