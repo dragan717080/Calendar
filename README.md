@@ -46,7 +46,7 @@ Please refer to the respective documentation of each technology for more in-dept
 
 2. Create `.env` file in root directory, and put corresponding variables:
 
-# `api` and `frontend/socials-server` DIRECTORIES
+### `api` and `frontend/socials-server` DIRECTORIES
 
 ```
 GITHUB_ID=YOUR_GITHUB_CLIENT_ID
@@ -56,7 +56,9 @@ GOOGLE_CLIENT_ID=YOUR_GOOGLE_CLIENT_ID
 GOOGLE_CLIENT_SECRET=YOUR_GOOGLE_CLIENT_SECRET
 ```
 
-`api` DIRECTORY DATABASE ENVIRONMENT VARIABLES
+### `api` DIRECTORY DATABASE ENVIRONMENT VARIABLES
+
+```
 DB_CONNECTION=YOUR_DB_CONNECTION
 DB_HOST=YOUR_DB_HOST
 DB_PORT=YOUR_DB_PORT
@@ -64,8 +66,8 @@ DB_DATABASE=YOUR_DB_DATABASE
 DB_USERNAME=YOUR_DB_USERNAME
 DB_PASSWORD=YOUR_DB_PASSWORD
 SSLMODE=require
-
-# FRONTEND DIRECTORY
+```
+### FRONTEND DIRECTORY
 
 ```
 VITE_SERVICE_NAME=

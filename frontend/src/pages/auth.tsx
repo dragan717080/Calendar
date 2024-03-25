@@ -55,7 +55,6 @@ const AuthPage: FC = () => {
     // To do: move to react-query mutations
     axios.post(`${import.meta.env.VITE_API_SOCIALS_URL}/get_access_token`, { code })
       .then((response: AxiosResponse) => {
-        console.log(response.data)
         const { auth_token, username } = response.data;
         loginUser(auth_token, username)
       })
@@ -66,12 +65,9 @@ const AuthPage: FC = () => {
       .finally(setIsPageLoading(false));
   }, []);
 
-  console.log('remount')
   const socialAction = (action: string) => {
     // To do: use react-query mutation
     setIsPageLoading(true);
-
-    console.log(action)
 
     if (action === 'github') {
       window.location.assign(`https://github.com/login/oauth/authorize?client_id=${import.meta.env.VITE_GITHUB_ID}`);
