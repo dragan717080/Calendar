@@ -8,7 +8,10 @@ import moment from 'moment';
 import CalendarNavigationButtonHandler from '~/utils/CalendarNavigationButtonHandler';
 import { IoMdAdd } from 'react-icons/io';
 import type { CalendarViewVariant } from '~/interfaces/types';
-import type { Event, View as CalendarDefaultViewVariant, DateRange } from 'react-big-calendar';
+import type { View as CalendarDefaultViewVariant, DateRange } from 'react-big-calendar';
+import type Event from '~/interfaces/Event';
+import toast from 'react-hot-toast';
+
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import '~/styles/calendar.css';
 
@@ -18,11 +21,13 @@ const IndexPage: FC = () => {
   const [events, setEvents] = useState<Event[]>([
     {
       title: 'Event 1',
+      description: 'asd',
       start: new Date(2024, 3, 1),
       end: new Date(2024, 3, 3),
     },
     {
       title: 'Event 2',
+      description: 'asdadasd',
       start: new Date(2024, 3, 5),
       end: new Date(2024, 3, 7),
     },
@@ -31,6 +36,14 @@ const IndexPage: FC = () => {
   const calendarRef = useRef(null!);
 
   const localizer = momentLocalizer(moment);
+
+  /**
+   * When new Event is added from other component, show a toast,
+   * this function is passed down to 'NewEventModal' component 
+   */
+  const createNewEventToast = () => {
+    toast.success('New Event added!');
+  }
 
   const openNewEventModal = () => {
     const modalElement: HTMLDialogElement | null = document.getElementById('my_modal_2') as HTMLDialogElement | null;
@@ -52,8 +65,13 @@ const IndexPage: FC = () => {
 
   }
 
-  const CalendarToolbar = () => 
-    <div className='mx-10 ml-[45%] 2xl:pr-10 py-3 row-v justify-between'>
+  const CalendarToolbar = () =>
+    <div className='mx-10 2xl:pr-10 py-3 row-v justify-between'>
+      <button 
+        onClick={() => setView('agenda')}
+        className='bg-gray-100 text-black py-2 px-4 runded-lg duration-300 active:scale-75 text-lg rounded-lg'>
+          See All Events
+      </button>
       <div className='row gap-6'>
         <ArrowButton 
           onClick={() =>
@@ -86,23 +104,28 @@ const IndexPage: FC = () => {
           <IoMdAdd size={24} />
         </button>
       </div>
-      <NewEventModal />
+      <NewEventModal events={events} setEvents={setEvents} createNewEventToast={() => createNewEventToast()} />
     </div>
 
   const CalendarRenderComponents = ({
     toolbar: CalendarToolbar,
   });
 
-  function usePrevious(value: any) {
-    const ref = useRef();
-    useEffect(() => {
-      ref.current = value; //assign the value of ref to the argument
-    },[value]); //this code will run when the value of 'value' changes
-    return ref.current; //in the end, return the current ref value.
-  }
-  const prevSelectedDate = usePrevious(selectedDate);
-
+  /**
+   * 
+   * Handles slot click (day in monthly view and time slot (from hour to hour + 1) in day view).
+   * If it is day view, enable user to open an Event Modal with those dates preselected.
+   * 
+   * @param {Date} start Start Date.
+   * @param {Date} end End Date
+   * 
+   * @returns {boolean} Just to comply with expected function signature from 'react-big-calendar'.
+   */
   const handleSelectSlot = ({ start, end }: DateRange): boolean => {
+    if (view === 'day') {
+      openNewEventModal();
+    }
+
     setSelectedDate(start);
     setView('day');
 

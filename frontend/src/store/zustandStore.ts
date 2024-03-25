@@ -10,10 +10,10 @@ export const useAuthStore = create<AuthStore>()(
     (set, get) => ({
       authToken: null,
       error: null,
-      email: null,
+      username: null,
       setAuthToken: (authToken: string | null) => set({ authToken, error: null }),
       setError: (error: string | null) => set({ error }),
-      setEmail: (email: string | null) => set({ email }),
+      setUsername: (username: string | null) => set({ username }),
     }),
     {
       name: 'zustand-auth-storage',

@@ -82,6 +82,17 @@ module.exports = {
       fontFamily: {
         worksans: ["Work Sans", "sans-serif"],
         poppins: ["Poppins", "sans-serif"]
+      },
+      spacing: {
+        "7/10": "70%",
+        "7/10": "70%",
+        "7/10": "70%",
+        "7/10": "70%",
+        "7/10": "70%",
+        "7/10": "70%",
+        "7/10": "70%",
+        "7/10": "70%",
+        "9/10": "90%",
       }
     }
   },

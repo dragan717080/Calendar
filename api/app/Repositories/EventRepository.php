@@ -4,13 +4,14 @@ namespace App\Repositories;
 
 use App\Models\Event;
 use App\Repositories\UserRepository;
-use App\Repositories\Traits\{ GetByIdTrait, DeleteTrait };
+use App\Repositories\Traits\{ GetAllTrait, GetByIdTrait, DeleteTrait};
 use App\Interfaces\{ ReadInterface, DeleteInterface };
 use App\Interfaces\Event\{ CreateInterface, UpdateInterface };
 
 class EventRepository implements CreateInterface, ReadInterface,
     UpdateInterface, DeleteInterface
 {
+    use GetAllTrait;
     use GetByIdTrait;
     use DeleteTrait;
 
@@ -19,11 +20,6 @@ class EventRepository implements CreateInterface, ReadInterface,
     public function __construct(private Event $event, private UserRepository $userRepository)
     {
         $this->model = $event;
-    }
-
-    public function getAll()
-    {
-        return Event::all();
     }
 
     public function update(

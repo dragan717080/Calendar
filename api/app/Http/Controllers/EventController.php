@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Controllers\BaseModelController;
 use App\Repositories\EventRepository;
+use Illuminate\Http\JsonResponse;
 
 class EventController extends BaseModelController
 {
@@ -16,10 +17,12 @@ class EventController extends BaseModelController
 
     public function create(Request $req)
     {
-        // It's more intuitive to pass user email when creating event rather than uuid
+        $r = $req->request->all();
+        //return new JsonResponse(['eventDataIs' => $r['title']]);
+        // It's more intuitive to pass username when creating event rather than uuid
         return $this->responseBuilder->postResponse(
             $req->request->all(),
-            ['userEmail', 'title', 'description', 'startTime', 'endTime']
+            ['username', 'title', 'description', 'startTime', 'endTime']
         );
     }
 
@@ -28,7 +31,7 @@ class EventController extends BaseModelController
         return $this->responseBuilder->updateResponse(
             $id,
             $req->request->all(),
-            ['userEmail', 'title', 'description', 'startTime', 'endTime']
+            ['username', 'title', 'description', 'startTime', 'endTime']
         );
     }
 }

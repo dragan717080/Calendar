@@ -82,7 +82,7 @@ class ResponseBuilder
             : self::notFound();
     }
 
-    public function postResponse(array $params, $requiredKeys)
+    public function postResponse(array $params, array $requiredKeys): JsonResponse
     {
         self::checkIfAllRequiredKeys(array_keys($params), $requiredKeys, $this->modelName);
 
@@ -97,7 +97,7 @@ class ResponseBuilder
              * was not found, in that case, string will give information about which model's key
              * was not found
              */
-            if (gettype($data) === "string") {
+            if (gettype($data) === 'string') {
                 return response()->json(
                     ['message' => $data], 
                     Response::HTTP_NOT_FOUND);
@@ -131,12 +131,12 @@ class ResponseBuilder
      * Similar to postResponse but this time validation for keys
      * is made in repository instead in order to save performance
      */
-    public function postManyResponse(array $params)
+    public function createManyResponse(array $params): JsonResponse
     {
         try {
             $data = $this->repository->createMany($params);
 
-            if (gettype($data) === "string") {
+            if (gettype($data) === 'string') {
                 return response()->json(
                     ['message' => $data], 
                     Response::HTTP_NOT_FOUND);
@@ -151,6 +151,58 @@ class ResponseBuilder
                 )
             );
         }
+    }
+
+    public function signIn(array $params, array $requiredKeys, bool $withCredentials=true): JsonResponse
+    {
+        self::checkIfAllRequiredKeys(array_keys($params), $requiredKeys, $this->modelName);
+
+        try {
+            $arr = array_map(fn($key) => $params[$key], $requiredKeys);
+
+            $data = $withCredentials
+                ? $this->repository->signInWithCredentials(...$arr)
+                : $this->repository->signInWithSocials(...$arr);
+
+            return response()->json($data, Response::HTTP_OK);
+        } catch (\Exception $e) {
+            $errorDetails = $e->getCode() === '23505'
+                ? self::informWhichKeysWereDuplicate($e->getMessage())
+                : $e->getMessage();
+
+            throw new HttpResponseException(
+                response()->json(
+                    ['message' => 'Error signing in ' . strtolower($this->modelName) . ": " . $errorDetails],
+                    Response::HTTP_BAD_REQUEST
+                )
+            );
+        }
+    }
+
+    public function signOut(array $params, array $requiredKeys)
+    {
+        self::checkIfAllRequiredKeys(array_keys($params), $requiredKeys, $this->modelName);
+
+        try {
+            $arr = array_map(fn($key) => $params[$key], $requiredKeys);
+
+            $data = $this->repository->signOut(...$arr);
+
+            if (gettype($data) === 'string') {
+                return response()->json(
+                    ['message' => $data], 
+                    Response::HTTP_NOT_FOUND);
+            }
+
+            return response()->json('Successfully signed out.', Response::HTTP_OK);
+        } catch (\Exception $e) {
+            throw new HttpResponseException(
+                response()->json(
+                    'Error signing out ' . strtolower($this->modelName) . ": " . $e->getMessage(),
+                    Response::HTTP_BAD_REQUEST
+                )
+            );
+        } 
     }
 
     public function updateResponse(string $id, array $params, $possibleKeys): JsonResponse

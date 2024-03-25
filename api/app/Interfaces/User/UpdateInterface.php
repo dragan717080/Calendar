@@ -8,6 +8,7 @@ interface UpdateInterface
 {
     public function update(
         string $id,
+        ?string $username,
         ?string $email,
         ?string $password,
     );

@@ -14,9 +14,9 @@ class ValidateAuthToken
      */
     public function handle(Request $request, Closure $next)
     {
-        $authToken = $request->input('authToken');
+        $authToken = $request->bearerToken();
 
-        $isInvalidFormat = is_string($authToken) && strlen($authToken) !== 60 || !is_string($authToken);
+        $isInvalidFormat = is_string($authToken) && strlen($authToken) !== 20 || !is_string($authToken);
         if ($authToken === null) {
             return response()->json(
                 ['error' => 'Must provide an auth token to access this resource.'],

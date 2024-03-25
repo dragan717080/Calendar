@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Controllers\BaseModelController;
 use App\Repositories\UserRepository;
+use Illuminate\Http\JsonResponse;
 
 class UserController extends BaseModelController
 {
@@ -18,7 +19,34 @@ class UserController extends BaseModelController
     {
         return $this->responseBuilder->postResponse(
             $req->request->all(),
-            ['email', 'password']
+            ['username', 'email', 'password']
+        );
+    }
+
+    public function signInWithCredentials(Request $req)
+    {
+        return $this->responseBuilder->signIn(
+            $req->request->all(),
+            ['username', 'email', 'password'],
+            true
+        );
+    }
+
+    public function signInWithSocials(Request $req)
+    {
+        return $this->responseBuilder->signIn(
+            $req->request->all(),
+            ['username', 'authToken'],
+            false
+        );
+    }
+
+    public function signOut(Request $req)
+    {
+        return new JsonResponse(['message' => '1']);
+        return $this->responseBuilder->signOut(
+            $req->request->all(),
+            ['username'],
         );
     }
 

@@ -20,3 +20,7 @@
 .react-datepicker__input-container input {
     @apply ml-auto text-right focus:outline-none;
 }
+
+.rbc-day-bg {
+    @apply cursor-pointer;
+}

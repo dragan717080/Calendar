@@ -7,6 +7,7 @@ namespace App\Interfaces\User;
 interface CreateInterface
 {
     public function create(
+        string $username,
         string $email,
         string $password
     );
