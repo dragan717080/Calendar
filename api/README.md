@@ -12,7 +12,7 @@ Laravel is a PHP web application framework known for its elegant syntax and deve
 
 PostgreSQL is a RDBMS known for its reliability, robust feature set, and extensibility. It is highly regarded for its ability to handle complex queries, manage high concurrency, and provide advanced data types and indexing capabilities. 
 
-<img src='https://github.com/dragan717080/Calendar/assets/135660124/56603c60-cbf2-4b42-a536-4177abd0fdde' alt='Passed Unit Tests' width='670' height='310' />
+<img src='https://github.com/dragan717080/Calendar/assets/135660124/56603c60-cbf2-4b42-a536-4177abd0fdde' alt='Database Schema' width='670' height='310' />
 
 ## Example endpoint
 
