@@ -43,7 +43,6 @@ class UserController extends BaseModelController
 
     public function signOut(Request $req)
     {
-        return new JsonResponse(['message' => '1']);
         return $this->responseBuilder->signOut(
             $req->request->all(),
             ['username'],

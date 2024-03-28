@@ -17,8 +17,6 @@ class EventController extends BaseModelController
 
     public function create(Request $req)
     {
-        $r = $req->request->all();
-        //return new JsonResponse(['eventDataIs' => $r['title']]);
         // It's more intuitive to pass username when creating event rather than uuid
         return $this->responseBuilder->postResponse(
             $req->request->all(),

@@ -22,25 +22,34 @@ class ResponseBuilder
         // e.g. for class BrandRepository model name will be Brand, this will be used to format messages
         return explode('Repository', end($parts))[0];
     }
+
     /**
      * Checks whether the request body has all the required keys.
      * 
-     * @param array $requestKeys Array of keys in request payload.
+     * @param array $requestParams Array in request payload.
      * @param array $requiredKeys Array of required keys.
      * @param string $this->modelName Name of current model, used for error formatting.
      * 
      * @return void
      **/
     private function checkIfAllRequiredKeys(
-        array $requestKeys,
+        array $requestParams,
         array $requiredKeys,
     ): void
     {
+        $requestKeys = array_keys($requestParams);
         foreach ($requiredKeys as $requiredKey) {
             if (!in_array($requiredKey, $requestKeys)) {
                 throw new HttpResponseException(
                     response()->json(
                         'Error creating ' . strtolower($this->modelName) . ": Missing key $requiredKey",
+                        Response::HTTP_BAD_REQUEST
+                    )
+                );
+            } else if (empty($requestParams[$requiredKey])) {
+                throw new HttpResponseException(
+                    response()->json(
+                        'Error creating ' . strtolower($this->modelName) . ": Value $requiredKey cannot be null",
                         Response::HTTP_BAD_REQUEST
                     )
                 );
@@ -84,7 +93,7 @@ class ResponseBuilder
 
     public function postResponse(array $params, array $requiredKeys): JsonResponse
     {
-        self::checkIfAllRequiredKeys(array_keys($params), $requiredKeys, $this->modelName);
+        self::checkIfAllRequiredKeys($params, $requiredKeys, $this->modelName);
 
         try {
             $arr = array_map(fn($key) => $params[$key], $requiredKeys);
@@ -155,7 +164,7 @@ class ResponseBuilder
 
     public function signIn(array $params, array $requiredKeys, bool $withCredentials=true): JsonResponse
     {
-        self::checkIfAllRequiredKeys(array_keys($params), $requiredKeys, $this->modelName);
+        self::checkIfAllRequiredKeys($params, $requiredKeys, $this->modelName);
 
         try {
             $arr = array_map(fn($key) => $params[$key], $requiredKeys);
@@ -181,7 +190,7 @@ class ResponseBuilder
 
     public function signOut(array $params, array $requiredKeys)
     {
-        self::checkIfAllRequiredKeys(array_keys($params), $requiredKeys, $this->modelName);
+        self::checkIfAllRequiredKeys($params, $requiredKeys, $this->modelName);
 
         try {
             $arr = array_map(fn($key) => $params[$key], $requiredKeys);

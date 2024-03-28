@@ -1,4 +1,4 @@
-# <a name="no-link"></a>Laravel Airport API
+# <a name="no-link"></a>Laravel Calendar API
 
 API for the Calendar App. Database agnostic but I've used PostgreSQL. All IDs are UUIDv4.
 
