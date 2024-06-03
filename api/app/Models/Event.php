@@ -12,6 +12,8 @@ class Event extends Model
 
     protected $fillable = ['title', 'description', 'start_time', 'end_time'];
 
+    protected $hidden = ['id', 'user_id'];
+
     // This model doesn't need timestamps for created/updated
     public $timestamps = false;
 }

@@ -24,3 +24,8 @@
 .rbc-day-bg {
     @apply cursor-pointer;
 }
+
+.rbc-agenda-empty {
+    text-align: center;
+    margin-top: 20%;
+}

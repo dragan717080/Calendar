@@ -15,6 +15,22 @@ class EventController extends BaseModelController
         parent::__construct($this->eventRepository);
     }
 
+    public function getAllEvents(Request $req)
+    {
+        $username = $req->query('username');
+
+        return !$username
+            ? parent::getAll()
+            : $this->getAllEventsForUser($username);
+    }
+
+    public function getAllEventsForUser(string $username)
+    {
+        $allEventsForUser = $this->eventRepository->getAllEventsForUser($username);
+
+        return $allEventsForUser;
+    }
+
     public function create(Request $req)
     {
         // It's more intuitive to pass username when creating event rather than uuid

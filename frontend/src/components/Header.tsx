@@ -20,7 +20,7 @@ const Header: FC = () => {
     axios.post(
       `${import.meta.env.VITE_API_BASE_URL}/users/sign-out`,
       { username }
-      )
+    )
       .then((response: AxiosResponse) => {
         setUsername(null);
         setAuthToken(null);
@@ -32,18 +32,23 @@ const Header: FC = () => {
   useEffect(() => {
     // Just redirect if not logged in rather than employ middleware to avoid installing Redux and redux-thunk (less bundle size)
     if (!authToken) {
-      navigate('/auth');
+      // In case it was Google Redirect, don't redirect to auth
+      const queryString = window.location.search;
+      const urlParams = new URLSearchParams(queryString);
+      const username = urlParams.get('google_username');
+
+      !username ? navigate('/auth') : setUsername(username)
     }
   }, []);
 
   return (
-    <header className='sticky top-0 z-40 bg-white shadow-lg py-3 mx-auto justify-between px-[10%] 2xl:px-[12%] 2xl:pr-10 w-full text-gray-600'>
+    <header className={`sticky top-0 z-40 bg-white shadow-lg py-3 mx-auto justify-between px-[4%] 2xl:px-[6%] 2xl:pr-10 w-full text-gray-600 ${username && 'gap-2 px-2'}`}>
       <div className='row-v justify-between'>
         <div
           onClick={() => navigate('/')}
           className='row'
         >
-          <div className='relative row-v h-16 w-16 pointer'>
+          <div className='relative row-v h-10 md:h-16 w-10 md:w-16 pointer'>
             <img
               src='src/assets/images/logo.webp'
               className='object-contain object-left'
@@ -58,13 +63,13 @@ const Header: FC = () => {
           </Link>
         </div>
         <div className='row-v space-x-4 text-gray-600 semibold ml-4 mr-2 md:ml-10 lg:ml-10 sm:mr-12'>
-          {authToken
+          {username
             ? <div className='inline-flex'>
               <FaUserCircle
                 size={26}
-                className='ml-5 mr-2 hidden md:block'
+                className='mr-2 md:block'
               />
-              <div className='t-red mt-0.5 md:pr-1 max-w-[9rem] text-ellipsis overflow-hidden hidden md:block'>{ username }</div>
+              <div className='t-red mt-0.5 md:pr-1 max-w-[9rem] md:max-w-[12rem] text-ellipsis overflow-hidden md:block'>{username}</div>
               <button className='t-cornflowerblue ml-3' onClick={async () => await signOut()} >Logout</button>
             </div>
             : <div className='md:pl-3 lg:pl-6 2xl:pr-4 hover:text-primary pr-2 md:pr-16'>

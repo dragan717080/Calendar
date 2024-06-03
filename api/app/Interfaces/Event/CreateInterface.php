@@ -7,7 +7,7 @@ namespace App\Interfaces\Event;
 interface CreateInterface
 {
     public function create(
-        string $userEmail,
+        string $username,
         string $email,
         string $password,
         string $startTime,

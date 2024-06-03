@@ -22,7 +22,6 @@ const NewEventModal: FC = ({ eventStartDate, eventEndDate, events, setEvents, cr
   const closeModalButtonRef = useRef<HTMLButtonElement | null>(null!);
 
   const { authToken, username } = useAuthStore();
-
   /**
    * Creates an event.
    * 
@@ -47,6 +46,7 @@ const NewEventModal: FC = ({ eventStartDate, eventEndDate, events, setEvents, cr
 
     const eventData = { ...data, username, startTime: formattedStartDate, endTime: formattedEndDate };
     // To do: use react-query optimistic mutate
+    eventData.username = username?.split('@')[0]
     axios.post(
       `${import.meta.env.VITE_API_BASE_URL}/events`,
       { ...eventData },
@@ -57,9 +57,11 @@ const NewEventModal: FC = ({ eventStartDate, eventEndDate, events, setEvents, cr
       }
     )
     .then((response: AxiosResponse) => {
-      const { title, description, start, end }: Event = response.data;
+      const { title, description, start_time, end_time }: Event = response.data;
       closeModalButtonRef?.current.click();
       createNewEventToast();
+      const start = new Date(start_time)
+      const end = new Date(end_time)
       setEvents([...events, { title, description, start, end }])
   })
     .catch((err: AxiosError) => {
@@ -91,7 +93,8 @@ const NewEventModal: FC = ({ eventStartDate, eventEndDate, events, setEvents, cr
               ring-gray-300
               focus:ring-2 
               focus:ring-inset 
-              focus:ring-sky-600"
+              focus:ring-sky-600
+              focus:outline-none"
               {...register('description', { required: false })}
             />
           </div>

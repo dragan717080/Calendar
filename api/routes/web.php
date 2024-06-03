@@ -8,11 +8,11 @@ use App\Http\Controllers\{
 
 // To do: make events child route of users/{id} since it's dependant on it like 'users/{id}/events'
 Route::prefix('events')->group(function() {
-    Route::get('/', [EventController::class, 'getAll']);
+    Route::get('/', [EventController::class, 'getAllEvents']);
     Route::get('/{id}', [EventController::class, 'getById']);
-    Route::post('/', [EventController::class, 'create'])->middleware('validateAuthToken');
-    Route::patch('/{id}', [EventController::class, 'update'])->middleware('validateAuthToken');
-    Route::delete('/{id}', [EventController::class, 'delete'])->middleware('validateAuthToken');
+    Route::post('/', [EventController::class, 'create']);
+    Route::patch('/{id}', [EventController::class, 'update'])->middleware('client');
+    Route::delete('/{id}', [EventController::class, 'delete'])->middleware('client');
 });
 
 Route::prefix('users')->group(function() {

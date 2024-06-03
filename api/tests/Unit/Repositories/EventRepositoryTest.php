@@ -70,7 +70,7 @@ class EventRepositoryTest extends TestCase
         // Mock the update method
         $this->eventRepositoryMock
             ->shouldReceive('update')->andReturnUsing(
-                fn ($id, $userEmail, $title, $description, $startTime, $endTime) => tap(new Event(), function ($event) use ($id, $title, $description) {
+                fn ($id, $username, $title, $description, $startTime, $endTime) => tap(new Event(), function ($event) use ($id, $title, $description) {
                     $event->title = $title;
                     $event->description = $description;
                 })

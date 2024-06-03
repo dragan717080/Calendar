@@ -22,9 +22,20 @@ class EventRepository implements CreateInterface, ReadInterface,
         $this->model = $event;
     }
 
+    public function getAllEventsForUser(string $username): array|string
+    {
+        $user = $this->userRepository->model->where('username', $username)->first();
+        
+        if ($user === null) {
+            return "User $username does not exist.";
+        }
+
+        return $this->model->where('user_id', $user->id)->get()->toArray();
+    }
+
     public function update(
         string $id,
-        ?string $userEmail,
+        ?string $username,
         ?string $title, 
         ?string $description,
         ?string $startTime,
@@ -68,7 +79,7 @@ class EventRepository implements CreateInterface, ReadInterface,
      *   The 'ResponseBuilder' class shall also handle other parameters, and middleware 'App\Http\Middleware\ValidateEmail' shall validate email.
      */
     public function create(
-        string $userEmail,
+        string $username,
         string $title, 
         string $description,
         string $startTime,
@@ -77,10 +88,10 @@ class EventRepository implements CreateInterface, ReadInterface,
     {
         $event = new Event();
 
-        $user = $this->userRepository->model->where('email', $userEmail)->first();
+        $user = $this->userRepository->model->where('username', $username)->first();
         
         if ($user === null) {
-            return "User with email $userEmail does not exist.";
+            return "User $username does not exist.";
         }
 
         $event->user_id = $user->id;

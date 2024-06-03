@@ -11,87 +11,17 @@ import type { CalendarViewVariant } from '~/interfaces/types';
 import type { View as CalendarDefaultViewVariant, DateRange } from 'react-big-calendar';
 import type Event from '~/interfaces/Event';
 import toast from 'react-hot-toast';
-
+import { useQuery } from 'react-query';
+import { useAuthStore } from '~/store/zustandStore';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import '~/styles/calendar.css';
 
 const IndexPage: FC = () => {
   const [view, setView] = useState<CalendarViewVariant>('month');
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
-  const [events, setEvents] = useState<Event[]>([
-    {
-      title: 'Go to bar with John',
-      description: 'Description for Event 1',
-      start: new Date(2024, 2, 1, 10, 0, 0),
-      end: new Date(2024, 2, 1, 11, 0, 0),
-    },
-    {
-      title: 'Go to football game with Peter',
-      description: 'Description for Event 2',
-      start: new Date(2024, 2, 2, 13, 0, 0),
-      end: new Date(2024, 2, 2, 16, 0, 0),
-    },
-    {
-      title: 'Buy washing machine in Walmart',
-      description: 'Description for Event 3',
-      start: new Date(2024, 2, 3, 15, 0, 0),
-      end: new Date(2024, 2, 3, 18, 0, 0),
-    },
-    {
-      title: 'Play bingo with grandma',
-      description: 'Play bingo with grandma',
-      start: new Date(2024, 2, 4, 9, 0, 0),
-      end: new Date(2024, 2, 4, 11, 0, 0),
-    },
-    {
-      title: 'Go to park to feed pidgeons',
-      description: 'Go to park to feed pidgeons',
-      start: new Date(2024, 2, 5, 14, 0, 0),
-      end: new Date(2024, 2, 5, 16, 0, 0),
-    },
-    {
-      title: 'Buy washing machine in Walmart',
-      description: 'Buy washing machine in Walmart',
-      start: new Date(2024, 2, 4, 13, 0, 0),
-      end: new Date(2024, 2, 4, 15, 0, 0),
-    },
-    {
-      title: 'Go to Colorado with Daniel and George',
-      description: 'Go to Colorado with Daniel and George',
-      start: new Date(2024, 2, 17, 16, 0, 0),
-      end: new Date(2024, 2, 26, 18, 0, 0),
-    },
-    {
-      title: 'Play golf with Edward',
-      description: 'Play golf with Edward',
-      start: new Date(2024, 2, 8, 17, 0, 0),
-      end: new Date(2024, 2, 8, 20, 0, 0),
-    },
-    {
-      title: 'Learn Japanese',
-      description: 'Learn Japanese',
-      start: new Date(2024, 2, 3, 19, 0, 0),
-      end: new Date(2024, 2, 9, 22, 0, 0),
-    },
-    {
-      title: 'Go to mountain for hiking',
-      description: 'Description for Event 10',
-      start: new Date(2024, 2, 12, 18, 0, 0),
-      end: new Date(2024, 2, 16, 20, 0, 0),
-    },
-    {
-      title: 'Visit aunt',
-      description: 'Description for Event 11 (3-day event)',
-      start: new Date(2024, 3, 15, 10, 0, 0),
-      end: new Date(2024, 3, 18, 10, 0, 0),
-    },
-    {
-      title: 'Go to congress in Estonia',
-      description: 'Description for Event 12 (3-day event)',
-      start: new Date(2024, 3, 5, 12, 0, 0),
-      end: new Date(2024, 3, 8, 12, 0, 0),
-    },
-  ]);
+  // If needed import events from 'constants'
+  const [events, setEvents] = useState<Event[]>([]);
+  const { username } = useAuthStore()
 
   const calendarRef = useRef(null!);
 
@@ -126,13 +56,13 @@ const IndexPage: FC = () => {
   }
 
   const CalendarToolbar = () =>
-    <div className='mx-10 2xl:pr-10 py-3 row-v justify-between'>
+    <div className='mx-10 2xl:pr-10 py-7 md:py-3 flex-col md:flex-row row-v justify-between'>
       <button 
         onClick={() => setView('agenda')}
-        className='bg-gray-100 text-black py-2 px-4 runded-lg duration-300 active:scale-75 text-lg rounded-lg'>
+        className='bg-gray-100 text-black py-2 px-4 2xl:ml-16 runded-lg duration-300 active:scale-75 text-lg rounded-lg'>
           See All Events
       </button>
-      <div className='row gap-6'>
+      <div className='row gap-3 md:gap-6 my-9 md:my-0'>
         <ArrowButton 
           onClick={() =>
             CalendarNavigationButtonHandler.handlePrevButtonClick(view, selectedDate, setSelectedDate)
@@ -172,7 +102,6 @@ const IndexPage: FC = () => {
   });
 
   /**
-   * 
    * Handles slot click (day in monthly view and time slot (from hour to hour + 1) in day view).
    * If it is day view, enable user to open an Event Modal with those dates preselected.
    * 
@@ -197,6 +126,30 @@ const IndexPage: FC = () => {
     // react-big-calendar 'View' type has more views so it is cast into the needed subset
     setView(viewName as CalendarViewVariant);
   }
+
+  const getAllEvents = async () => {
+    const response = await fetch(`http://127.0.0.1:8000/events?username=${username}`);
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+
+    return response.json();
+  };
+
+  const { data, error, isLoading, isError } = useQuery(['data'], getAllEvents);
+
+  useEffect(() => {
+    if (!isLoading && !isError && data) {
+      const events = data.map(event => ({
+        title: event.title,
+        description: event.description,
+        start: new Date(event.start_time),
+        end: new Date(event.end_time),
+      }))
+
+      setEvents(events)
+    }
+  }, [data, isLoading, isError]);
 
   return (
     <div className="flex-1 min-h-screen">

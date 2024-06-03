@@ -28,7 +28,7 @@ const AuthPage: FC = () => {
   /**
    * Logs in user, either with credentials or social providers.
    * @param {string} authToken - auth token for authorization.
-   * @param {string} username - user identifier (email for credentials and login for social providers).
+   * @param {string} username - user identifier (username for credentials and login for social providers).
    */
   const loginUser = (authToken: string, username: string): void => {
     const status = variant === 'LOGIN' ? 'logged in' : 'signed up';
@@ -66,13 +66,16 @@ const AuthPage: FC = () => {
   }, []);
 
   const socialAction = (action: string) => {
-    // To do: use react-query mutation
+  // To do: use react-query mutation
     setIsPageLoading(true);
 
     if (action === 'github') {
       window.location.assign(`https://github.com/login/oauth/authorize?client_id=${import.meta.env.VITE_GITHUB_ID}`);
     }
     // Implement signIn
+    if (action === 'google') {
+      window.location.assign('https://accounts.google.com/o/oauth2/v2/auth?client_id=205119235639-lacd9587il1kh8d1gv016vq18ekeh72u.apps.googleusercontent.com&redirect_uri=http://localhost:5000/auth/google&response_type=code&scope=openid%20profile%20email&access_type=offline')
+    }
   }
 
   // To do give it type
@@ -87,7 +90,7 @@ const AuthPage: FC = () => {
   }
 
   const mutation = useMutation(postUser, { 
-    onSuccess: (response: AxiosResponse) => loginUser(response.data.auth_token, response.data.email),
+    onSuccess: (response: AxiosResponse) => loginUser(response.data.auth_token, response.data.username),
     onError: (error: AxiosError) => {
       let errorMessage = error.message;
       if (error?.response?.data) {
@@ -98,14 +101,13 @@ const AuthPage: FC = () => {
     },
     onSettled: () => setIsPageLoading(false),
   });
-  
+
   const onSubmit: SubmitHandler<FieldValues> = (formValues: FieldValues) => {
     setIsPageLoading(true);
     mutation.mutate(formValues);
   }
 
   /**
-   * 
    * After loading, enable page interaction.
    * Go back to index page if got token (since didn't install Redux for middleware route guard to reduce bundle size).
    */
